@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
-from flask import Flask, make_response
+from flask import Flask, make_response, render_template
 from flask_migrate import Migrate
+from sqlalchemy import SQLALchemy
 
 from models import db, Zookeeper, Enclosure, Animal
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLALchemy(app)
 
 migrate = Migrate(app, db)
 
@@ -19,15 +21,18 @@ def home():
 
 @app.route('/animal/<int:id>')
 def animal_by_id(id):
-    return ''
+    animal = Animal.query.get_or_404(id)
+    return render_template('animal.html', animal=animal)
 
 @app.route('/zookeeper/<int:id>')
 def zookeeper_by_id(id):
-    return ''
+    zookeeper = Zookeeper.query.get_or_404(id)
+    return render_template('zookeeper.html', zookeeper=zookeeper)
 
 @app.route('/enclosure/<int:id>')
 def enclosure_by_id(id):
-    return ''
+    enclosure = Enclosure.query.get_or_404(id)
+    return render_template('enclosure.html', enclosure=enclosure)
 
 
 if __name__ == '__main__':
